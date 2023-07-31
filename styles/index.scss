@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+//COMPONENTS
+@import 'components/sp-menu.scss';
+
+//CUSTOM
+body {
+  .splide__track--nav > .splide__list > .splide__slide.is-active {
+    @apply border-4 z-40 mb-3 border-transparent relative before:absolute before:-bottom-3 before:w-full before:h-1 before:bg-purple-700;
+  }
+
+  .splide__track--fade > .splide__list > .splide__slide img {
+    @apply object-contain w-full h-full;
+  }
+}
