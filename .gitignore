@@ -32,7 +32,11 @@ yarn-error.log*
 
 # vs code
 .vscode
+.idea
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+docker-co
+
+docker-compose.yml
