@@ -8,7 +8,7 @@ import Config from '@/core/config';
 const Header = async ({}) => {
   const api = new Api({ baseUrl: Config.API_BASE_URL });
 
-  const { data: menu, status } = await api.getMainMenu();
+  const { data: menu, status, error = null } = await api.getMainMenu();
 
   return (
     <div className="shadow-lg shadow-slate-200">
@@ -47,7 +47,7 @@ const Header = async ({}) => {
             </div>
           </div>
         </div>
-        <Menu menu={menu} />
+        <Menu menu={menu ?? []} />
       </div>
     </div>
   );

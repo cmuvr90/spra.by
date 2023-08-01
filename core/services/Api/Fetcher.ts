@@ -5,19 +5,40 @@ export default class Fetcher {
     this.baseUrl = baseUrl;
   }
 
-  public get = async (url: string) => {
+  /**
+   *
+   * @param url
+   * @returns
+   */
+  public get = async (url: string): Promise<Response> => {
     return await this.query(url);
   };
 
-  private query = async (url: string, data?: any) => {
-    const response = await fetch(`${this.baseUrl}${url}`, {
-      next: {
-        revalidate: 3000,
-      },
-    });
+  /**
+   *
+   * @param url
+   * @param data
+   * @returns
+   */
+  private query = async (url: string, data?: any): Promise<Response> => {
+    try {
+      const response = await fetch(`${this.baseUrl}${url}`, {
+        next: {
+          revalidate: 3000,
+        },
+      });
 
-    if (!response.ok) throw new Error('post not found');
+      if (!response.ok) throw new Error('post not found');
 
-    return response.json();
+      return response.json();
+    } catch (e: any) {
+      return { error: `${e?.message || e}`, status: 'error' };
+    }
   };
 }
+
+type Response = {
+  data?: any;
+  status: 'error' | 'success';
+  error?: string;
+};
