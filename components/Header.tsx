@@ -1,10 +1,15 @@
 import Link from 'next/link';
 import Menu from '@/components/Menu';
 import data from '../storage/index.json';
-import defaultData from '../storage/default.json';
 import { HeardIcon, SearchIcon, CartIcon } from '@/components/icons';
+import Api from '@/core/services/Api';
+import Config from '@/core/config';
 
-const Header = ({}) => {
+const Header = async ({}) => {
+  const api = new Api({ baseUrl: Config.API_BASE_URL });
+
+  const { data: menu, status } = await api.getMainMenu();
+
   return (
     <div className="shadow-lg shadow-slate-200">
       <div className="container mx-auto">
@@ -12,7 +17,9 @@ const Header = ({}) => {
           <div className="bg-gray-800 p-2 text-center text-gray-200 text-xs rounded-bl-md rounded-br-md">{data.topPanel}</div>
 
           <div className="flex items-center flex-col gap-4 lg:flex-row lg:gap-10 py-2">
-            <h1 className="text-purple-600 text-2xl font-semibold">spraby</h1>
+            <h1 className="text-purple-600 text-2xl font-semibold">
+              <Link href={'/'}>SPRA.BY</Link>
+            </h1>
 
             <div className="border-gray-300 grow border flex p-1 rounded-lg justify-center items-center gap-2">
               <div className="px-2">
@@ -40,7 +47,7 @@ const Header = ({}) => {
             </div>
           </div>
         </div>
-        <Menu menu={defaultData.menu} />
+        <Menu menu={menu} />
       </div>
     </div>
   );
