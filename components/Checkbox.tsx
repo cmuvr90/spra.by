@@ -1,8 +1,11 @@
-const Checkbox = ({ label }: Props) => {
+'use client';
+
+const Checkbox = ({ label, onChange = undefined }: Props) => {
   return (
     <label className="flex gap-2 items-center">
       <input
         type="checkbox"
+        onChange={typeof onChange === 'function' ? (e) => onChange(e.target.checked) : undefined}
         className="relative w-4 h-4 
         checked:before:border-gray-600 checked:after:opacity-100
         before:absolute before:rounded before:w-5 before:h-5 before:bg-white before:border before:border-gray-300 before:border-solid before:top-1/2 before:left-1/2 before:-translate-x-1/2 before:-translate-y-1/2
@@ -15,6 +18,7 @@ const Checkbox = ({ label }: Props) => {
 
 type Props = {
   label: string;
+  onChange?: (checked: boolean) => void;
 };
 
 export default Checkbox;

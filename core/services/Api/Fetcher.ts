@@ -1,3 +1,5 @@
+const qs = require('qs');
+
 export default class Fetcher {
   private baseUrl;
 
@@ -10,8 +12,8 @@ export default class Fetcher {
    * @param url
    * @returns
    */
-  public get = async (url: string): Promise<Response> => {
-    return await this.query(url);
+  public get = async (url: string, params = {}): Promise<Response> => {
+    return await this.query(url + '?' + qs.stringify(params));
   };
 
   /**
@@ -21,6 +23,7 @@ export default class Fetcher {
    * @returns
    */
   private query = async (url: string, data?: any): Promise<Response> => {
+    console.log('URL =', `${this.baseUrl}${url}`);
     try {
       const response = await fetch(`${this.baseUrl}${url}`, {
         next: {
@@ -34,6 +37,29 @@ export default class Fetcher {
     } catch (e: any) {
       return { error: `${e?.message || e}`, status: 'error' };
     }
+  };
+
+  /**
+   *
+   * @param data
+   * @returns {string}
+   */
+  private getParams = (params: any) => {
+    const queryString = Object.keys(params)
+      .map((key) => {
+        if (typeof params[key] === 'object') {
+          return encodeURIComponent(key) + '=' + encodeURIComponent(JSON.stringify(params[key]));
+        }
+        return encodeURIComponent(key) + '=' + encodeURIComponent(params[key]);
+      })
+      .join('&');
+
+    return queryString;
+
+    /*    let values = [];
+    for (let key in data)
+      if (data.hasOwnProperty(key) && data[key] !== null) values.push(`${encodeURIComponent(key)}=${encodeURIComponent(data[key])}`);
+    return values.length > 0 ? '?' + values.join('&') : ''; */
   };
 }
 
