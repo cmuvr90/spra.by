@@ -1,4 +1,4 @@
-import { Option } from './OptionInterface';
+import { Option } from '@/core/types/Option';
 
 export type Category = {
   id: string;

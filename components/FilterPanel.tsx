@@ -1,20 +1,43 @@
 'use client';
 
-import { Category } from '@/core/types/CategoryInterface';
-import { Option } from '@/core/types/OptionInterface';
 import { transliterate as tr } from 'transliteration';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Filter from './Filter';
+import { FilterCommonValueType, FilterType } from '@/core/types/Filter';
+import { Category } from '@/core/types/Category';
+import { Option } from '@/core/types/Option';
 
 const FilterPanel = ({ categories = [], onChange }: Props) => {
+  const [value, setValue] = useState<FilterCommonValueType[]>([]);
   const filters = useMemo(() => getFiltersGroups(categories), [categories]);
 
-  const _onChange = () => {
-    onChange(5);
+  useEffect(() => {
+    onChange(value, categories.map(i => i.id));
+  }, [value]);
+
+  /**
+   *
+   * @param filterValue
+   */
+  const _onChange = (filterValue: FilterCommonValueType) => {
+    setValue(value => {
+      if (filterValue.values.length === 0 && filterValue.ids.length === 0) {
+        value = value.filter(i => i.key !== filterValue.key);
+      } else {
+        let currentValue = value.find(i => i.key === filterValue.key);
+        if (currentValue) {
+          currentValue.ids = filterValue.ids;
+          currentValue.values = filterValue.values;
+        } else {
+          value.push(filterValue);
+        }
+      }
+      return [...value];
+    });
   };
 
   return (
-    <div>
+    <div className={'flex flex-col gap-5'}>
       {filters.map((filter, index) => (
         <Filter key={index} filter={filter} onChange={_onChange} />
       ))}
@@ -22,25 +45,27 @@ const FilterPanel = ({ categories = [], onChange }: Props) => {
   );
 };
 
+export default FilterPanel;
+
 type Props = {
   categories: Category[];
-  onChange: (value: any) => void;
+  onChange: (value: FilterCommonValueType[], categoryIds: string[]) => void;
 };
-
-export default FilterPanel;
 
 /**
  *
  * @param categories
  */
-function getFiltersGroups(categories: Category[]): Filter[] {
+function getFiltersGroups(categories: Category[]): FilterType[] {
   return categories
+
     .reduce((acc: Option[], category: Category) => {
       category.options.map((option) => {
         if (!acc.find((i) => i.id === option.id)) acc.push(option);
       });
       return acc;
     }, [])
+
     .reduce((acc: { key: string; title: string; value: string; ids: string[] }[], option: Option) => {
       const key = tr(option.title).toLowerCase().replaceAll(' ', '_');
 
@@ -55,7 +80,8 @@ function getFiltersGroups(categories: Category[]): Filter[] {
 
       return acc;
     }, [])
-    .reduce((acc: Filter[], optionValue: { key: string; title: string; value: string; ids: string[] }) => {
+
+    .reduce((acc: FilterType[], optionValue: { key: string; title: string; value: string; ids: string[] }) => {
       const currentOptionValue = acc.find((i) => i.key === optionValue.key);
       if (currentOptionValue) {
         currentOptionValue.values = [...currentOptionValue.values, { value: optionValue.value, ids: optionValue.ids }];
@@ -68,6 +94,7 @@ function getFiltersGroups(categories: Category[]): Filter[] {
       }
       return acc;
     }, [])
+
     .map((type) => ({
       ...type,
       values: type.values.sort((a, b) => {
@@ -75,9 +102,3 @@ function getFiltersGroups(categories: Category[]): Filter[] {
       }),
     }));
 }
-
-type Filter = {
-  key: string;
-  title: string;
-  values: { value: string; ids: string[] }[];
-};

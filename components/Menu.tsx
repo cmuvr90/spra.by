@@ -1,7 +1,8 @@
 import Link from 'next/link';
+import { MainMenu } from '@/core/types/Navigation';
 
-export default function Menu({ menu = [] }: { menu: Menu[] }) {
-  const renderItems = (items: Menu[], deep: number = 1) => {
+export default function Menu({ menu = [] }: { menu: MainMenu[] }) {
+  const renderItems = (items: MainMenu[], deep: number = 1) => {
     return items.length ? (
       <ul>
         {items.map((i, index) => {
@@ -17,11 +18,5 @@ export default function Menu({ menu = [] }: { menu: Menu[] }) {
     ) : null;
   };
 
-  return <nav className="sp-menu">{renderItems(menu)}</nav>;
+  return <nav className='sp-menu'>{renderItems(menu)}</nav>;
 }
-
-type Menu = {
-  title: string;
-  url?: string;
-  children?: Menu[];
-};

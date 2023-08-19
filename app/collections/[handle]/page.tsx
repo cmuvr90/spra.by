@@ -1,27 +1,26 @@
 import ProductCart from '@/components/ProductCart';
-import defaultData from '../../../storage/default.json';
 import Api from '@/core/services/Api';
 import Config from '@/core/config';
-import { FilterInterface } from '@/core/types';
-import { Category } from '@/core/types/CategoryInterface';
-
-import Filter from '@/components/Filter';
-import { Option } from '@/core/types/OptionInterface';
 import { revalidatePath } from 'next/cache';
 import FilterPanel from '@/components/FilterPanel';
+import { FilterCommonValueType } from '@/core/types/Filter';
+import { ProductInterface } from '@/core/types';
 
-let products = [];
+let products: ProductInterface[] = [];
+
 const api = new Api({ baseUrl: Config.API_BASE_URL });
 
 export default async function Collection({ params: { handle } }: { params: { handle: string } }) {
-  let { data: collection, status, error = null } = await api.collections.get(handle);
+  let { data: collection, error } = await api.collections.get(handle);
 
-  async function updateFilter(value: any) {
+  async function updateFilter(value: FilterCommonValueType[], categories: string[]) {
     'use server';
-    console.log('DATA = ', value);
 
-    /*     const products = await api.products.get({ options: [value] });
-    console.log('PRODUCTS = ', products); */
+    const options = value.map(i => ({ ids: i.ids, values: i.values }));
+    const { data } = await api.products.get({ options, categories });
+    products = data;
+
+    console.log('PRODUCTS = ', products);
 
     /*  console.log('TEST111 !!!!!!! ', defaultData);
     products = defaultData.products; */
@@ -29,12 +28,16 @@ export default async function Collection({ params: { handle } }: { params: { han
   }
 
   return (
-    <main className="container mx-auto grid grid-cols-12 gap-5">
-      <div className="col-span-3">
-        <FilterPanel categories={collection?.categories ?? []} onChange={updateFilter} />
+    <main className='container mx-auto grid grid-cols-12 gap-5'>
+      <div className='col-span-3'>
+        <FilterPanel
+          categories={collection?.categories ?? []}
+          onChange={updateFilter}
+        />
       </div>
-      <div className="col-span-9">
-        <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5">
+      <div className='col-span-9'>
+        <div className='grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5'>
+          {JSON.stringify(products)}
           {products.map((product, index) => {
             return <ProductCart product={product} key={index} />;
           })}

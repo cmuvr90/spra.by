@@ -1,4 +1,8 @@
 import Fetcher from './Fetcher';
+import { FetchResponseStatus } from '@/core/types/Fetcher';
+import Collection from '@/core/types/Collection';
+import { MainMenu } from '@/core/types/Navigation';
+import { ProductInterface } from '@/core/types';
 
 export default class Api {
   private fetcher;
@@ -15,7 +19,7 @@ export default class Api {
       get: this.getProducts,
     };
     this.collections = {
-      get: this.getCollections,
+      get: this.getCollection,
     };
   }
 
@@ -23,8 +27,13 @@ export default class Api {
    *
    * @returns
    */
-  private navigationMainMenu = () => {
-    return this.fetcher.get('/navigations/main');
+  private navigationMainMenu = async (): Promise<{
+    data: MainMenu[],
+    status: FetchResponseStatus,
+    error: string | null
+  }> => {
+    const { data, status, error } = await this.fetcher.get('/navigations/main');
+    return { data, status, error };
   };
 
   /**
@@ -32,15 +41,25 @@ export default class Api {
    * @param handle
    * @returns
    */
-  private getCollections = (handle: string) => {
-    return this.fetcher.get(`/collections/${handle}`);
+  private getCollection = async (handle: string): Promise<{
+    data: Collection,
+    status: FetchResponseStatus,
+    error: string | null
+  }> => {
+    const { data, status, error } = await this.fetcher.get(`/collections/${handle}`);
+    return { data, status, error };
   };
 
   /**
    *
    * @returns
    */
-  private getProducts = (params: any) => {
-    return this.fetcher.get(`/products`, params);
+  private getProducts = async (params: any): Promise<{
+    data: ProductInterface[],
+    status: FetchResponseStatus,
+    error: string | null
+  }> => {
+    const { data, status, error } = await this.fetcher.get(`/products`, params);
+    return { data, status, error };
   };
 }

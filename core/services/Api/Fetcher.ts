@@ -1,7 +1,8 @@
 const qs = require('qs');
+import { FetchResponseStatus, FetchResponseType } from '@/core/types/Fetcher';
 
 export default class Fetcher {
-  private baseUrl;
+  private readonly baseUrl;
 
   constructor({ baseUrl }: { baseUrl: string }) {
     this.baseUrl = baseUrl;
@@ -10,9 +11,10 @@ export default class Fetcher {
   /**
    *
    * @param url
+   * @param params
    * @returns
    */
-  public get = async (url: string, params = {}): Promise<Response> => {
+  public get = async (url: string, params = {}): Promise<FetchResponseType> => {
     return await this.query(url + '?' + qs.stringify(params));
   };
 
@@ -22,8 +24,7 @@ export default class Fetcher {
    * @param data
    * @returns
    */
-  private query = async (url: string, data?: any): Promise<Response> => {
-    console.log('URL =', `${this.baseUrl}${url}`);
+  private query = async (url: string, data?: any): Promise<FetchResponseType> => {
     try {
       const response = await fetch(`${this.baseUrl}${url}`, {
         next: {
@@ -33,38 +34,13 @@ export default class Fetcher {
 
       if (!response.ok) throw new Error('post not found');
 
-      return response.json();
+      const responseData = await response.json();
+
+      if (responseData?.error) throw new Error(responseData.error);
+
+      return { data: responseData?.data ?? null, status: responseData?.status ?? FetchResponseStatus.SUCCESS, error: null };
     } catch (e: any) {
-      return { error: `${e?.message || e}`, status: 'error' };
+      return { data: null, error: `${e?.message || e}`, status: FetchResponseStatus.ERROR };
     }
   };
-
-  /**
-   *
-   * @param data
-   * @returns {string}
-   */
-  private getParams = (params: any) => {
-    const queryString = Object.keys(params)
-      .map((key) => {
-        if (typeof params[key] === 'object') {
-          return encodeURIComponent(key) + '=' + encodeURIComponent(JSON.stringify(params[key]));
-        }
-        return encodeURIComponent(key) + '=' + encodeURIComponent(params[key]);
-      })
-      .join('&');
-
-    return queryString;
-
-    /*    let values = [];
-    for (let key in data)
-      if (data.hasOwnProperty(key) && data[key] !== null) values.push(`${encodeURIComponent(key)}=${encodeURIComponent(data[key])}`);
-    return values.length > 0 ? '?' + values.join('&') : ''; */
-  };
 }
-
-type Response = {
-  data?: any;
-  status: 'error' | 'success';
-  error?: string;
-};
