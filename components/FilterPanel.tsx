@@ -1,18 +1,18 @@
 'use client';
 
-import { transliterate as tr } from 'transliteration';
 import { useEffect, useMemo, useState } from 'react';
 import Filter from './Filter';
-import { FilterCommonValueType, FilterType } from '@/core/types/Filter';
-import { Category } from '@/core/types/Category';
-import { Option } from '@/core/types/Option';
+import { FilterCommonValueType } from '@/core/types/Filter';
+import { Category as CategoryType } from '@/core/types/Category';
+import { Category } from '@/core/services/Category';
 
-const FilterPanel = ({ categories = [], onChange }: Props) => {
+const FilterPanel = ({ categories: categoriesData = [], onChange }: Props) => {
+  const categories = useMemo(() => categoriesData.map(i => new Category(i)), [categoriesData]);
   const [value, setValue] = useState<FilterCommonValueType[]>([]);
-  const filters = useMemo(() => getFiltersGroups(categories), [categories]);
+  const filters = useMemo(() => Category.getFiltersGroups(categories), [categories]);
 
   useEffect(() => {
-    onChange(value, categories.map(i => i.id));
+    onChange(value, categories.map(i => i.getId()));
   }, [value]);
 
   /**
@@ -48,57 +48,6 @@ const FilterPanel = ({ categories = [], onChange }: Props) => {
 export default FilterPanel;
 
 type Props = {
-  categories: Category[];
+  categories: CategoryType[];
   onChange: (value: FilterCommonValueType[], categoryIds: string[]) => void;
 };
-
-/**
- *
- * @param categories
- */
-function getFiltersGroups(categories: Category[]): FilterType[] {
-  return categories
-
-    .reduce((acc: Option[], category: Category) => {
-      category.options.map((option) => {
-        if (!acc.find((i) => i.id === option.id)) acc.push(option);
-      });
-      return acc;
-    }, [])
-
-    .reduce((acc: { key: string; title: string; value: string; ids: string[] }[], option: Option) => {
-      const key = tr(option.title).toLowerCase().replaceAll(' ', '_');
-
-      option.values.map((value) => {
-        const currentValue = acc.find((i) => i.value === value && i.key === key);
-        if (currentValue) {
-          currentValue.ids = Array.from(new Set([...currentValue.ids, option.id]));
-        } else {
-          acc.push({ key, title: option.title, value, ids: [option.id] });
-        }
-      });
-
-      return acc;
-    }, [])
-
-    .reduce((acc: FilterType[], optionValue: { key: string; title: string; value: string; ids: string[] }) => {
-      const currentOptionValue = acc.find((i) => i.key === optionValue.key);
-      if (currentOptionValue) {
-        currentOptionValue.values = [...currentOptionValue.values, { value: optionValue.value, ids: optionValue.ids }];
-      } else {
-        acc.push({
-          key: optionValue.key,
-          title: optionValue.title,
-          values: [{ value: optionValue.value, ids: optionValue.ids }],
-        });
-      }
-      return acc;
-    }, [])
-
-    .map((type) => ({
-      ...type,
-      values: type.values.sort((a, b) => {
-        return a.value.toUpperCase() < b.value.toUpperCase() ? -1 : a.value.toUpperCase() > b.value.toUpperCase() ? 1 : 0;
-      }),
-    }));
-}

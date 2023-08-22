@@ -1,12 +1,12 @@
 import { Category } from '@/core/types/Category';
 
-export default interface Collection {
+export type Collection = {
   name: string
   handle: string
   title: string
   description?: string
   image?: {
     src: string
-  }
-  categories?: Category[]
+  } | null,
+  categories: Category[]
 }

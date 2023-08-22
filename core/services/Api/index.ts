@@ -1,8 +1,8 @@
 import Fetcher from './Fetcher';
 import { FetchResponseStatus } from '@/core/types/Fetcher';
-import Collection from '@/core/types/Collection';
 import { MainMenu } from '@/core/types/Navigation';
-import { ProductInterface } from '@/core/types';
+import { Product } from '@/core/types/Product';
+import { Collection } from '@/core/types/Collection';
 
 export default class Api {
   private fetcher;
@@ -10,7 +10,9 @@ export default class Api {
   public products;
   public collections;
 
-  constructor({ baseUrl }: { baseUrl: string }) {
+  constructor({ baseUrl }: {
+    baseUrl: string
+  }) {
     this.fetcher = new Fetcher({ baseUrl });
     this.navigation = {
       main: this.navigationMainMenu,
@@ -42,7 +44,7 @@ export default class Api {
    * @returns
    */
   private getCollection = async (handle: string): Promise<{
-    data: Collection,
+    data: Collection | null,
     status: FetchResponseStatus,
     error: string | null
   }> => {
@@ -55,7 +57,7 @@ export default class Api {
    * @returns
    */
   private getProducts = async (params: any): Promise<{
-    data: ProductInterface[],
+    data: Product[],
     status: FetchResponseStatus,
     error: string | null
   }> => {

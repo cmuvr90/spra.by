@@ -4,7 +4,7 @@ export type Option = {
   type: string; //@todo fix
   key: string; //@todo remove
   title: string;
-  description?: string;
+  description: string | null;
   values: string[];
   createdAt: string;
   updatedAt: string;

@@ -6,9 +6,9 @@ export type Category = {
   handle: string;
   title: string;
   description?: string;
-  image?: {
+  image: {
     src: string;
-  };
+  } | null;
   options: Option[];
   createdAt: string;
   updatedAt: string;

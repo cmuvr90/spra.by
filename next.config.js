@@ -25,6 +25,12 @@ const nextConfig = {
         port: '',
         pathname: '/**',
       },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '3002',
+        pathname: '/**',
+      },
     ],
   },
   sassOptions: {
