@@ -18,7 +18,8 @@ export default class Api {
       main: this.navigationMainMenu,
     };
     this.products = {
-      get: this.getProducts,
+      list: this.getProducts,
+      get: this.getProduct,
     };
     this.collections = {
       get: this.getCollection,
@@ -62,6 +63,19 @@ export default class Api {
     error: string | null
   }> => {
     const { data, status, error } = await this.fetcher.get(`/products`, params);
+    return { data, status, error };
+  };
+
+  /**
+   *
+   * @param id
+   */
+  private getProduct = async (id: string): Promise<{
+    data: Product,
+    status: FetchResponseStatus,
+    error: string | null
+  }> => {
+    const { data, status, error } = await this.fetcher.get(`/products/${id}`);
     return { data, status, error };
   };
 }

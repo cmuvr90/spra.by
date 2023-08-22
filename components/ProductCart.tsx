@@ -5,7 +5,7 @@ import { Product } from '@/core/types/Product';
 const ProductCart = ({ product }: Props) => {
   return (
     <div className='flex gap-2 p-2 flex-col'>
-      <Link href={'/products/cascas6545c6as1c6a516sa'}>
+      <Link href={`/products/${product.id}`}>
         <div className='aspect-square bg-white rounded-md'>
           {
             product.images?.length &&
@@ -21,7 +21,7 @@ const ProductCart = ({ product }: Props) => {
       </Link>
       <div className='flex flex-col'>
         <h3 className='text-sm'>
-          <Link href={'/products/cascas6545c6as1c6a516sa'}> {product.title} </Link>
+          <Link href={`/products/${product.id}`}> {product.title} </Link>
         </h3>
         <h4 className='text-xs'>{product.description}</h4>
         <div className='flex gap-2 items-center'>

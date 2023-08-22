@@ -9,3 +9,12 @@ export type Option = {
   createdAt: string;
   updatedAt: string;
 };
+
+export type OptionData = {
+  id: string,
+  label: string,
+  options: {
+    label: string,
+    value: string
+  }[]
+}

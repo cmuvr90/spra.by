@@ -46,7 +46,7 @@ export default async function Collection({ params: { handle } }: Props) {
  * @param params
  */
 async function getProducts(params: any) {
-  const { data, status } = await api.products.get(params);
+  const { data, status } = await api.products.list(params);
   if (status === FetchResponseStatus.SUCCESS && Array.isArray(data)) return data;
   return [];
 }
