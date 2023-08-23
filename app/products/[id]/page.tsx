@@ -26,9 +26,7 @@ export default async function ProductPage({ params: { id } }: Props) {
     <main>
       <div className='container mx-auto grid gap-10 grid-cols-12'>
         <div className='flex gap-7 flex-col col-span-12 lg:col-span-6 xl:col-span-7'>
-          <DoubleSlider
-            images={product.getImagesSrc()}
-          />
+          <DoubleSlider images={product.getImagesSrc()} startImage={variant?.image?.src ?? null} />
           <Tabs
             tabs={[
               {

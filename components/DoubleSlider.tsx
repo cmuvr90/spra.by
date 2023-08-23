@@ -5,7 +5,7 @@ import '@splidejs/react-splide/css';
 import Image from 'next/image';
 import { useEffect, useRef } from 'react';
 
-const DoubleSlider = ({ images }: Props) => {
+const DoubleSlider = ({ images, startImage = null }: Props) => {
   const main = useRef(null);
   const thumbnails = useRef(null);
 
@@ -16,10 +16,15 @@ const DoubleSlider = ({ images }: Props) => {
       // @ts-ignore
       main.current.sync(thumbnails.current.splide);
     }
-  }, [images]);
+    if (startImage) {
+      const imageIndex = images.findIndex(i => i === startImage);
+      // @ts-ignore
+      if (imageIndex != -1) thumbnails.current.go(imageIndex);
+    }
+  }, [images, startImage]);
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className='flex flex-col gap-4'>
       <Splide
         ref={main}
         options={{
@@ -30,13 +35,15 @@ const DoubleSlider = ({ images }: Props) => {
           cover: false,
         }}
       >
-        {images.map((image, index) => {
-          return (
-            <SplideSlide key={index}>
-              <Image alt="" src={image} width={1500} height={1500} />
-            </SplideSlide>
-          );
-        })}
+        {
+          images.map((image, index) => {
+            return (
+              <SplideSlide key={index}>
+                <Image alt='' src={image} width={1500} height={1500} />
+              </SplideSlide>
+            );
+          })
+        }
       </Splide>
 
       {images.length > 1 && (
@@ -67,7 +74,7 @@ const DoubleSlider = ({ images }: Props) => {
           {images.map((image, index) => {
             return (
               <SplideSlide key={index}>
-                <Image alt="" src={image} width={500} height={500} />
+                <Image alt='' src={image} width={500} height={500} />
               </SplideSlide>
             );
           })}
@@ -79,6 +86,7 @@ const DoubleSlider = ({ images }: Props) => {
 
 type Props = {
   images: string[];
+  startImage?: string | null;
 };
 
 export default DoubleSlider;
