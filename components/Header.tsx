@@ -13,6 +13,9 @@ const Header = async ({}) => {
 
   const { data: menu } = await api.navigation.main();
 
+  console.log('menu === ', menu);
+
+
   return (
     <div className='shadow-lg shadow-slate-200'>
       <div className='container mx-auto'>

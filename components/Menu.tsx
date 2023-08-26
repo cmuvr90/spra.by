@@ -2,6 +2,9 @@ import Link from 'next/link';
 import { MainMenu } from '@/core/types/Navigation';
 
 export default function Menu({ menu = [] }: { menu: MainMenu[] }) {
+
+  console.log('MENU!! = ', menu);
+
   const renderItems = (items: MainMenu[], deep: number = 1) => {
     return items.length ? (
       <ul>
