@@ -13,7 +13,7 @@ const ProductCart = ({ product }: Props) => {
               style={{ aspectRatio: 1, objectFit: 'cover', borderRadius: '0.375rem' }}
               width={500}
               height={500}
-              src={product.images[0].src}
+              src={product.images[0].src.replace('https://api.spra.by/', 'http://api:3002/')}
               alt={product.title}
             />
           }

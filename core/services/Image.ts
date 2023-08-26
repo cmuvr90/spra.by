@@ -9,5 +9,5 @@ export class Image {
 
   getId = () => this.image.id;
 
-  getSrc = () => this.image.src;
+  getSrc = () => this.image.src.replace('https://api.spra.by/', 'http://api:3002/');
 }
