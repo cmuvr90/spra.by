@@ -6,6 +6,9 @@ import Api from '@/core/services/Api';
 import Config from '@/core/config';
 
 const Header = async ({}) => {
+
+  console.log('Config = ', Config);
+
   const api = new Api({ baseUrl: Config.API_BASE_URL });
 
   const { data: menu } = await api.navigation.main();

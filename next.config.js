@@ -31,6 +31,12 @@ const nextConfig = {
         port: '3002',
         pathname: '/**',
       },
+      {
+        protocol: 'http',
+        hostname: 'api',
+        port: '3002',
+        pathname: '/**',
+      },
     ],
   },
   sassOptions: {
