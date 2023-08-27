@@ -40,3 +40,4 @@ next-env.d.ts
 docker-co
 
 docker-compose.yml
+.env

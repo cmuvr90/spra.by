@@ -7,15 +7,16 @@ services:
         UID: ${UID}
         GID: ${GID}
         PORT: ${PORT}
+        HOST: ${HOST}
       dockerfile: Dockerfile
-    env_file: .env.production
+    env_file: .env
     user: ${UID}:${GID}
     restart: always
     ports:
       - ${PORT}:${PORT}
     networks:
-      - bridge
+      - spraby_network
 
 networks:
-  bridge:
+  spraby_network:
     external: true
