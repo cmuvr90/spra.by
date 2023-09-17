@@ -8,6 +8,7 @@ import { Product } from '@/core/types/Product';
 import { FetchResponseStatus } from '@/core/types/Fetcher';
 
 let products: Product[] = [];
+let loading = true;
 const api = new Api({ baseUrl: Config.API_BASE_URL });
 
 export default async function Collection({ params: { handle } }: Props) {
@@ -15,8 +16,11 @@ export default async function Collection({ params: { handle } }: Props) {
 
   async function updateFilter(value: FilterCommonValueType[], categories: string[]) {
     'use server';
+    loading = true;
+    revalidatePath('/');
     const options = value.map(i => ({ ids: i.ids, values: i.values }));
     products = await getProducts({ options, categories });
+    loading = false;
     revalidatePath('/');
   }
 
@@ -29,13 +33,21 @@ export default async function Collection({ params: { handle } }: Props) {
         />
       </div>
       <div className='col-span-9'>
-        <div className='grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5'>
-          {
-            products.map((product, index) => {
-              return <ProductCart product={product} key={index} />;
-            })
-          }
-        </div>
+        {
+          loading ?
+            <div className='grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5'>
+              loading...
+            </div> :
+            <div className='grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5'>
+              {
+                products.map((product, index) => {
+                  return <ProductCart product={product} key={index} />;
+                })
+              }
+            </div>
+        }
+
+
       </div>
     </main>
   );
